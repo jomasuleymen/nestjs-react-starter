@@ -1,0 +1,21 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "passThroughEnv": [
+        "NODE_ENV",
+        "PORT",
+        "CORS_*",
+        "LOG_LEVEL",
+        "JWT_*",
+        "SWAGGER_ENABLED",
+        "DATABASE_*",
+        "REDIS_*",
+        "S3_*"
+      ]
+    },
+    "build": {
+      "passThroughEnv": ["DATABASE_*"]
+    }
+  }
+}

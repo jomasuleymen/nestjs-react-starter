@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": true,
+
+    "target": "es2025",
+    "lib": ["es2025"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "resolveJsonModule": true,
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "sourceMap": true,
+    "declaration": false,
+    "noEmitOnError": true,
+    "removeComments": true,
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@common/*": ["./src/common/*"],
+      "@generated/*": ["./src/generated/*"],
+      "@infra/*": ["./src/infrastructure/*"],
+      "@modules/*": ["./src/modules/*"],
+
+      "@/*": ["./src/*"]
+    }
+  },
+
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+
+  "include": ["src/**/*.ts", "./*.ts"],
+  "exclude": ["node_modules", "dist", "prisma.config.ts"]
+}
