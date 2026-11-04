@@ -54,8 +54,9 @@ is not automatic. The example credentials are local placeholders.
 RustFS uses a new `rustfs_data` volume. Existing object-storage volumes are not
 reused, deleted, or migrated; copy existing objects through S3 before switching
 an environment that already contains data. The PostgreSQL and Redis volume names
-and mount paths remain unchanged. No services or data migrations were run while
-updating this configuration; compatibility with live services remains unverified.
+and mount paths remain unchanged. Live API/service verification subsequently
+passed; see the [verification record](docs/verification.md) for checks, local
+provisioning, and limits. No database migrations were run by the agent.
 
 ## Development
 

@@ -56,7 +56,10 @@ export class S3ObjectStorageAdapter implements ObjectStorage, OnModuleDestroy {
             ? hexChecksumToBase64(input.checksumSha256)
             : undefined,
         }),
-        { expiresIn: input.expiresInSeconds },
+        {
+          expiresIn: input.expiresInSeconds,
+          unhoistableHeaders: new Set(['x-amz-checksum-sha256']),
+        },
       );
     } catch (error) {
       this.throwStorageError(error, input.bucket, input.key, 'presignUpload');

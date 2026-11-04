@@ -204,8 +204,7 @@ deletion, concurrent state changes, missing/unavailable storage, cleanup retries
 file-only background selection, generic roles, and configuration validation
 without Gotenberg. These use mocked persistence and storage, not live services.
 
-`pnpm build`, API/background startup, dependency lifecycle scripts, and service
-integration have not been verified. Global agent instructions require approval
-before builds and starting services. The web,
-services, Docker adaptations, and CI/CD remain for later stages. The directory is
-now a Git repository; the original source repositories remain the fallback.
+API build, HTTP/background startup, and live PostgreSQL/Redis/RustFS integration
+passed the [pre-frontend verification gate](apps/api/docs/verification.md).
+Dependency lifecycle scripts, frontend work, production container packaging, and
+CI/CD remain separate stages. The original source repositories remain the fallback.
