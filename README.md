@@ -1,15 +1,15 @@
 # NestJS React Starter
 
-Incremental NestJS/React monorepo starter based on the `docs-tsl` applications.
+Incremental NestJS/React monorepo starter.
 The API now retains authentication, files, and their infrastructure. Application
 folder layouts and retained feature behavior remain the reference for migration.
 
 ## Source baseline
 
-| Application | Source directory | Git commit |
-| --- | --- | --- |
-| API | `../docs-tsl/docs-tsl-api` | `506f07c8246bddc7556340d128e0897bc418161b` |
-| Web | `../docs-tsl/docs-tsl-app` | `ebde7b0e077de05b872737496e4c57380d53f5b4` |
+| Application | Source Git commit |
+| --- | --- |
+| API | `506f07c8246bddc7556340d128e0897bc418161b` |
+| Web | `ebde7b0e077de05b872737496e4c57380d53f5b4` |
 
 Both source worktrees were clean at initial inspection. Keep them intact as the
 reference and fallback while building the monorepo in this directory.
@@ -18,17 +18,29 @@ reference and fallback while building the monorepo in this directory.
 
 ```text
 apps/
-  api/   # docs-tsl-api, with its existing internal layout
-  web/   # docs-tsl-app, with its existing internal layout
+  api/   # NestJS API
+  web/   # React frontend (not migrated yet)
 ```
 
 Preserve module layouts, validation, authentication, and the locked dependency
-baseline for retained features. The docs-tsl business domain has been removed from
+baseline for retained features. The source business domain has been removed from
 the API by explicit scope change. Do not extract shared packages or replace the
 existing OpenAPI contract with hand-written shared types.
 
 Package-manager and task configuration may need small compatibility adjustments.
 Record each adjustment separately from application logic changes.
+
+## Naming a new project
+
+- Set the repository name in the root `package.json` (currently
+  `starter`). Private package names such as `@starter/api` can stay
+  generic; commands select `./apps/api` instead of a package name.
+- Set `COMPOSE_PROJECT_NAME` in `apps/api/.env` to choose the Docker resource
+  namespace. The default is `starter`; container names are derived by Compose.
+  Changing this namespace does not rename existing volumes or move their data.
+- Database and bucket defaults are generic (`app` and `files`). Override
+  `DATABASE_NAME` and `S3_BUCKET` in the API environment when needed.
+- Swagger's display title is in `apps/api/src/app/api/api.setup.ts`.
 
 ## Technology versions
 
@@ -143,9 +155,9 @@ was performed. For a normal local setup, configure the API environment in
 `apps/api` before generating the client or building:
 
 ```sh
-pnpm --filter docs-tsl run prisma:generate
-pnpm --filter docs-tsl run type-check --tsBuildInfoFile /dev/null
-pnpm --filter docs-tsl run lint
+pnpm --filter ./apps/api run prisma:generate
+pnpm --filter ./apps/api run type-check --tsBuildInfoFile /dev/null
+pnpm --filter ./apps/api run lint
 ```
 
 The type-check command discards the incremental cache on this macOS/Linux setup
@@ -177,12 +189,12 @@ differs from the source business application.
   account SQL script, and the Gotenberg service from the copied Compose file.
 - Declare the existing logger's `colorette` dependency directly at the already
   resolved `2.0.20` version rather than depending on transitive hoisting.
-- Keep the existing package name `docs-tsl` for pnpm filters until project naming
-  is handled. `file-job.contracts.ts` defines queue payload contracts, not the
-  removed business contracts domain.
+- The API package is named `@starter/api`; documented pnpm filters select its
+  directory so commands survive package renames. `file-job.contracts.ts` defines
+  queue payload contracts, not the removed business contracts domain.
 
-This is a fresh-project schema. Do not apply it as a migration to a docs-tsl
-database. Initial account provisioning and fresh database migration generation
+This is a fresh-project schema, not a migration for an existing source database.
+Initial account provisioning and fresh database migration generation
 are not implemented in this stage; no database migrations were run.
 
 Cleanup verification passed: Prisma client generation and schema validation,

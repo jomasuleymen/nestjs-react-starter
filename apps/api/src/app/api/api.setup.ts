@@ -67,8 +67,8 @@ const setupSwagger = (app: NestExpressApplication): void => {
   }
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('DOCS-TSL API')
-    .setDescription('DOCS-TSL API')
+    .setTitle('Starter API')
+    .setDescription('Authentication and file storage API')
     .addBearerAuth(
       {
         type: 'http',

@@ -5,7 +5,7 @@ API and background processing have separate entrypoints:
 - `pnpm run start:api` starts HTTP controllers and user-facing modules.
 - `pnpm run start:background` starts the configured worker or scheduler modules.
 
-Run these commands inside `apps/api`, or use `pnpm --filter docs-tsl run` from
+Run these commands inside `apps/api`, or use `pnpm --filter ./apps/api run` from
 the monorepo root.
 
 `BACKGROUND_ROLE` is required and accepts `worker` or `scheduler`.
@@ -38,6 +38,8 @@ job bootstrap.
 
 ## Job Rules
 
+- Queue Redis must use `maxmemory-policy=noeviction`; the Compose service sets
+  this explicitly and enables AOF persistence.
 - Give repeatable and idempotent jobs stable `jobId` values.
 - Handlers must be idempotent because BullMQ retries failed jobs and can rerun
   stalled jobs.
