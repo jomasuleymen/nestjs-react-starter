@@ -1,0 +1,11 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "passThroughEnv": ["VITE_*"]
+    },
+    "build": {
+      "passThroughEnv": ["VITE_*"]
+    }
+  }
+}

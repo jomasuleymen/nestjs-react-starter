@@ -1,0 +1,7 @@
+dist
+node_modules
+.agents
+AGENTS.md
+skills-lock.json
+src/route-tree.gen.ts
+src/routeTree.gen.ts

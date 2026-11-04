@@ -1,0 +1,57 @@
+{
+  "name": "@starter/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "vite",
+    "api:generate": "openapi-ts",
+    "routes:generate": "tsr generate",
+    "build": "tsc -b --pretty false && vite build",
+    "preview": "vite preview",
+    "check": "pnpm run lint && pnpm run type-check && pnpm run format:check",
+    "type-check": "pnpm run routes:generate && tsc -b --pretty false",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.3.2",
+    "@tanstack/react-query": "^5.101.2",
+    "@tanstack/react-router": "1.170.17",
+    "antd": "^6.5.0",
+    "axios": "^1.18.1",
+    "dayjs": "^1.11.21",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-error-boundary": "^6.1.2",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@hey-api/openapi-ts": "^0.99.0",
+    "@tanstack/router-cli": "^1.167.18",
+    "@tanstack/router-plugin": "1.168.19",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.7.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.5",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.63.0",
+    "vite": "^8.1.4",
+    "vite-plugin-compression2": "^2.5.3"
+  }
+}

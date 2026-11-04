@@ -1,8 +1,9 @@
 # NestJS React Starter
 
 Incremental NestJS/React monorepo starter.
-The API now retains authentication, files, and their infrastructure. Application
-folder layouts and retained feature behavior remain the reference for migration.
+The API and frontend now retain authentication, files, and their infrastructure.
+Application folder layouts and retained feature behavior remain the reference
+for migration.
 
 ## Source baseline
 
@@ -14,12 +15,12 @@ folder layouts and retained feature behavior remain the reference for migration.
 Both source worktrees were clean at initial inspection. Keep them intact as the
 reference and fallback while building the monorepo in this directory.
 
-## Planned layout
+## Layout
 
 ```text
 apps/
   api/   # NestJS API
-  web/   # React frontend (not migrated yet)
+  web/   # React frontend
 ```
 
 Preserve module layouts, validation, authentication, and the locked dependency
@@ -41,6 +42,10 @@ Record each adjustment separately from application logic changes.
 - Database and bucket defaults are generic (`app` and `files`). Override
   `DATABASE_NAME` and `S3_BUCKET` in the API environment when needed.
 - Swagger's display title is in `apps/api/src/app/api/api.setup.ts`.
+- Frontend branding is in `apps/web/index.html`,
+  `apps/web/src/app/layouts/AppBrand.tsx`, and
+  `apps/web/src/modules/auth/pages/LoginPage.tsx`. Browser storage keys use the
+  generic `starter` prefix.
 
 ## Technology versions
 
@@ -52,6 +57,8 @@ their own checks; do not mix them into file moves.
 
 The API currently uses TypeScript `6.0.3`, NestJS `11.1.28`, and Prisma `7.8.0`.
 The registry reported `6.0.3` as the latest TypeScript 6 release at migration.
+The web uses TypeScript `6.0.3`, React `19.2.7`, Vite `8.3.5`, and Ant Design
+`6.6.8`. Its dependencies resolve within the source manifest's compatible ranges.
 
 ## Stages
 
@@ -59,7 +66,6 @@ Complete and review one stage before starting the next.
 
 1. **pnpm foundation (created).** Private root package, workspace definition,
    package-manager pin, Node.js pin matching the API, and root ignore rules.
-   No application packages or dependencies have been added yet.
 2. **Turborepo (installed and configured).** Root commands delegate to application
    scripts through Turbo. Validate application task execution after the
    applications are present; configure caching during integration.
@@ -67,10 +73,10 @@ Complete and review one stage before starting the next.
    entry points. Only auth and files remain; the Prisma schema is reduced to
    `User`, `Session`, and `File`. Dependencies retain their imported versions.
    Build and startup remain separate verification steps.
-4. **Web (deferred while working on the API).** Reuse the source application's
-   routing, HTTP layer, authentication UI, layouts, and Vite configuration for
-   the agreed auth/files template scope. Regenerate its client against the reduced
-   API. Verify static checks, then build and browser behavior separately.
+4. **Web (implemented and verified locally).** Source routing, HTTP layer,
+   authentication UI, layouts, and Vite configuration are in `apps/web`.
+   Only auth, files, and the workspace remain. The client is regenerated against
+   the reduced API. Static checks, production build, and browser flows passed.
 5. **Integration.** Verify the existing web-to-API flow, authentication, generated
    client workflow, and background tasks. Configure root task commands around
    the existing application scripts. Check cache inputs and outputs before
@@ -95,8 +101,11 @@ Complete and review one stage before starting the next.
   generation. Handle local configuration without copying credentials.
 - API script-to-script calls now use `pnpm run`. pnpm 12 runs pre/post scripts
   by default, so the existing Prisma `prebuild` hook remains in place.
-- The web package has an npm `overrides` entry for `ws` version `8.21.0`.
-  Preserve that resolution when configuring the pnpm workspace.
+- The source web's `ws` override is omitted because the resulting workspace
+  dependency graph contains no `ws` package.
+- Web declares the source-resolved Ant Design Icons version directly for pnpm's
+  strict dependency layout. React DOM types stay at source version `19.2.3` to
+  match the existing React types; peer validation passes.
 - Web API generation uses `http://localhost:3000/swagger/yaml` by default and
   writes generated files. It is a separate operation from static inspection.
 - Web type checking generates routes and uses TypeScript build mode. It can
@@ -206,5 +215,9 @@ without Gotenberg. These use mocked persistence and storage, not live services.
 
 API build, HTTP/background startup, and live PostgreSQL/Redis/RustFS integration
 passed the [pre-frontend verification gate](apps/api/docs/verification.md).
-Dependency lifecycle scripts, frontend work, production container packaging, and
-CI/CD remain separate stages. The original source repositories remain the fallback.
+Frontend setup, retained behavior, and verification are documented in
+[apps/web/README.md](apps/web/README.md). Start both apps with `pnpm dev` after
+configuring the API environment and local infrastructure.
+
+Dependency lifecycle scripts, production container packaging, and CI/CD remain
+separate stages. The original source repositories remain the fallback.
