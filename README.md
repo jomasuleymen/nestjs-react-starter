@@ -95,21 +95,17 @@ Complete and review one stage before starting the next.
 
 - The API requires Node.js `>=24 <25`; its `.node-version` pins `24.14.0`.
 - pnpm is pinned to `12.16.1`, the locally available version at setup.
-- The API uses `postinstall` and `prebuild` for Prisma generation. Preserve their
-  behavior when adopting pnpm and Turbo; do not run database migrations.
-- Prisma configuration reads database environment variables, including during
-  generation. Handle local configuration without copying credentials.
-- API script-to-script calls now use `pnpm run`. pnpm 12 runs pre/post scripts
-  by default, so the existing Prisma `prebuild` hook remains in place.
+- Turbo generates Prisma Client for the API tasks that need it. The API's
+  `postinstall` also supports direct Nest start commands. Prisma generation
+  works without database credentials or a running database.
 - The source web's `ws` override is omitted because the resulting workspace
   dependency graph contains no `ws` package.
 - Web declares the source-resolved Ant Design Icons version directly for pnpm's
   strict dependency layout. React DOM types stay at source version `19.2.3` to
   match the existing React types; peer validation passes.
-- Web API generation uses `http://localhost:3000/swagger/yaml` by default and
-  writes generated files. It is a separate operation from static inspection.
-- Web type checking generates routes and uses TypeScript build mode. It can
-  write files; do not treat it as a read-only check.
+- Web consumes an OpenAPI JSON document exported offline by Nest. Turbo
+  generates the SDK and TanStack route tree before web tasks that use them.
+  These artifacts and Prisma Client are ignored by Git.
 - Preserve each application's working-directory assumptions and local environment
   loading. Keep backend and frontend compiler/module configurations separate.
 
@@ -122,20 +118,25 @@ pnpm dev
 pnpm build
 pnpm lint
 pnpm type-check
+pnpm api:generate
 ```
 
-These commands run matching scripts in workspace applications. The API is present;
-the web application is not yet migrated. API `dev` delegates to the existing HTTP
-watch command. Its background entry point remains a separately selected command.
+API `dev` delegates to the HTTP watch command. Run the background roles
+separately as described in the [API guide](apps/api/README.md).
+Copy `apps/api/.env.example` to `apps/api/.env` and configure it before running
+`pnpm infra:up`. Use `pnpm infra:down` to stop the local infrastructure.
 
-`dev` is persistent and uncached. Build dependencies run before their dependents.
-All caching is disabled until application environment inputs, generated files,
-and build outputs have been checked during integration.
+`dev` is persistent and uncached. Turbo caches the generation tasks and the
+web build locally. API builds, lint and type checks run without caching.
+
+After building, `pnpm test:smoke` checks authentication and signed file uploads
+and downloads. It requires a local Docker daemon and uses a disposable Compose
+project with its own PostgreSQL database and storage bucket.
 
 To inspect the task graph without running application commands:
 
 ```sh
-pnpm exec turbo run dev build lint type-check --dry=json
+pnpm exec turbo run dev:app build:app lint:app type-check:app --dry=json
 ```
 
 ## API migration adjustments

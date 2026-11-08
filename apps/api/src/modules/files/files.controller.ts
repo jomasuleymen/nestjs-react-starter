@@ -26,6 +26,7 @@ export class FilesController {
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateUploadDto,
   ): Promise<UploadUrlResponseDto> {
+    // oxlint-disable-next-line typescript/no-misused-spread -- The validated DTO is passed as plain data.
     const upload = await this.filesService.createUpload({ ownerUserId: user.id, ...dto });
 
     return UploadUrlResponseDto.from(upload);

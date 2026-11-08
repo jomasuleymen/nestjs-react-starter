@@ -19,7 +19,7 @@ function getRequestId(req: IncomingMessage): string {
   return requestId ?? randomUUID();
 }
 
-const basePinoHttpConfig = (envConfigService: EnvConfigService): Params['pinoHttp'] => ({
+const basePinoHttpConfig = (envConfigService: EnvConfigService) => ({
   level: envConfigService.getLogLevel(),
   timestamp: pino.stdTimeFunctions.isoTime,
   genReqId: getRequestId,
@@ -57,7 +57,7 @@ const basePinoHttpConfig = (envConfigService: EnvConfigService): Params['pinoHtt
   autoLogging: {
     ignore: (req) => HEALTH_CHECK_PATHS.has(req.url ?? ''),
   },
-});
+} satisfies Params['pinoHttp']);
 
 const getProductionConfig = (envConfigService: EnvConfigService): Params => ({
   pinoHttp: basePinoHttpConfig(envConfigService),

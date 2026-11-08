@@ -49,6 +49,7 @@ web_modules/
 
 # Prisma generated client
 src/generated/prisma/
+/.generated/
 
 # Optional npm cache directory
 .npm

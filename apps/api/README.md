@@ -5,14 +5,13 @@ NestJS modular monolith with separate API and background entrypoints.
 ## Setup
 
 ```bash
-pnpm install --ignore-scripts
-pnpm --filter ./apps/api run prisma:generate
+pnpm install --frozen-lockfile --ignore-scripts
 ```
 
-Run installation from the monorepo root. Configure the API environment before
-generating Prisma Client. Dependency lifecycle scripts and Docker setup are
-separate verification steps. Compose configuration has been validated; container
-startup has not been checked.
+Run installation from the monorepo root. Prisma Client and the OpenAPI export can
+be generated without API runtime configuration or services.
+If you use a direct `start:*` command before running a Turbo task, run
+`pnpm --filter ./apps/api run prisma:generate` first.
 
 The Prisma schema contains only `User`, `Session`, and `File`, with `USER` and
 `ADMIN` roles. It is a fresh-project schema, not a migration for an existing
@@ -21,7 +20,9 @@ provisioning is not included; the project-specific SQL account script was remove
 
 ## Local infrastructure
 
-The Compose file pins stable releases checked on 2026-11-04:
+Copy `.env.example` to `.env` in this directory and configure the local services.
+Run `pnpm infra:up` and `pnpm infra:down` from the repository root. The root
+Compose file reads `apps/api/.env` and pins these releases:
 
 | Service | Image |
 | --- | --- |

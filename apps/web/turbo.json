@@ -1,11 +1,25 @@
 {
   "extends": ["//"],
   "tasks": {
-    "dev": {
+    "dev:app": {
+      "dependsOn": ["sdk:generate", "routes:generate"],
       "passThroughEnv": ["VITE_*"]
     },
-    "build": {
-      "passThroughEnv": ["VITE_*"]
-    }
+    "build:app": {
+      "cache": true,
+      "dependsOn": ["sdk:generate", "routes:generate"],
+      "env": ["VITE_API_URL"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        ".env",
+        ".env.local",
+        ".env.production",
+        ".env.production.local"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "type-check:app": { "dependsOn": ["sdk:generate", "routes:generate"] },
+    "lint:app": { "dependsOn": ["sdk:generate", "routes:generate"] }
   }
 }

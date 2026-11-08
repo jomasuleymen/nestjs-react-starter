@@ -1,7 +1,8 @@
 {
   "extends": ["//"],
   "tasks": {
-    "dev": {
+    "dev:app": {
+      "dependsOn": ["prisma:generate"],
       "passThroughEnv": [
         "NODE_ENV",
         "PORT",
@@ -14,8 +15,8 @@
         "S3_*"
       ]
     },
-    "build": {
-      "passThroughEnv": ["DATABASE_*"]
-    }
+    "build:app": { "dependsOn": ["prisma:generate"] },
+    "type-check:app": { "dependsOn": ["prisma:generate"] },
+    "lint:app": { "dependsOn": ["prisma:generate"] }
   }
 }

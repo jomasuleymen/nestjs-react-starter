@@ -1,7 +1,7 @@
 import { EnvConfigService } from '@infra/config/config.service';
 import { BadRequestException, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import bodyParser from 'body-parser';
 import { ValidationError } from 'class-validator';
 import compression from 'compression';
@@ -10,7 +10,8 @@ import helmet from 'helmet';
 import { ERROR_CODE } from './errors/api-error-codes';
 import { formatValidationErrors } from './errors/validation-error.formatter';
 
-const setupVersioning = (app: NestExpressApplication): void => {
+export const setupApiRouting = (app: NestExpressApplication): void => {
+  app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.MEDIA_TYPE,
     key: 'v=',
@@ -59,13 +60,7 @@ const setupSecurity = (app: NestExpressApplication): void => {
   app.set('trust proxy', true);
 };
 
-const setupSwagger = (app: NestExpressApplication): void => {
-  const config = app.get(EnvConfigService);
-
-  if (!config.getSwaggerEnabled()) {
-    return;
-  }
-
+export const createOpenApiDocument = (app: NestExpressApplication): OpenAPIObject => {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Starter API')
     .setDescription('Authentication and file storage API')
@@ -81,12 +76,20 @@ const setupSwagger = (app: NestExpressApplication): void => {
     .setVersion('1.0')
     .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+  return SwaggerModule.createDocument(app, swaggerConfig, {
     operationIdFactory: (controllerKey, methodKey) =>
       `${controllerKey.replaceAll('Controller', '')}__${methodKey}`,
   });
+};
 
-  SwaggerModule.setup('swagger', app, document, {
+const setupSwagger = (app: NestExpressApplication): void => {
+  const config = app.get(EnvConfigService);
+
+  if (!config.getSwaggerEnabled()) {
+    return;
+  }
+
+  SwaggerModule.setup('swagger', app, createOpenApiDocument(app), {
     swaggerOptions: {
       persistAuthorization: true,
       defaultModelsExpandDepth: 2,
@@ -98,9 +101,7 @@ const setupSwagger = (app: NestExpressApplication): void => {
 };
 
 export const setupApi = (app: NestExpressApplication): void => {
-  app.setGlobalPrefix('api');
-
-  setupVersioning(app);
+  setupApiRouting(app);
   setupValidation(app);
   setupHttpMiddleware(app);
   setupSecurity(app);

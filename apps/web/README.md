@@ -23,7 +23,6 @@ existing account, database, Redis, and S3 bucket/application credentials.
 
 ```sh
 pnpm install --frozen-lockfile --ignore-scripts
-pnpm --filter ./apps/api run prisma:generate
 pnpm dev
 ```
 
@@ -46,18 +45,19 @@ pnpm --filter ./apps/web run dev
 
 ## Generated code and checks
 
-With the API running and Swagger enabled:
+Run from the monorepo root:
 
 ```sh
-pnpm --filter ./apps/web run api:generate
-pnpm --filter ./apps/web run routes:generate
+pnpm api:generate
 pnpm --filter ./apps/web run check
 pnpm --filter ./apps/web run build
 ```
 
-API generation defaults to `http://localhost:3000/swagger/yaml`; override
-`OPENAPI_INPUT` for another URL or a local OpenAPI snapshot. Both generated API
-code and the route tree are checked in. Type checking also regenerates routes.
+Turbo exports OpenAPI from Nest to `apps/api/.generated/openapi.json` and
+generates the SDK and route tree locally before web commands that need them.
+Run `pnpm api:generate` again after changing API DTOs during development.
+For a one-off override, run `OPENAPI_INPUT=/path/to/openapi.json pnpm --filter
+./apps/web exec openapi-ts`. The normal Turbo workflow uses the local export.
 
 ## Files screen
 

@@ -210,5 +210,6 @@ function isValidationError(value: unknown): value is ValidationError {
 }
 
 function getRequestId(request: Request): string | undefined {
+  // oxlint-disable-next-line typescript/no-base-to-string -- Preserve Pino request ID normalization.
   return request.id === undefined ? undefined : String(request.id);
 }

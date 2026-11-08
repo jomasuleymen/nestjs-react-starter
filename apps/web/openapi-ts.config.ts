@@ -1,7 +1,10 @@
 import { defineConfig } from '@hey-api/openapi-ts';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
-  input: process.env.OPENAPI_INPUT ?? 'http://localhost:3000/swagger/yaml',
+  input:
+    process.env.OPENAPI_INPUT ??
+    fileURLToPath(new URL('../api/.generated/openapi.json', import.meta.url)),
   output: {
     clean: true,
     path: 'src/api/generated',

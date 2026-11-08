@@ -6,12 +6,18 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check"
+    "dev": "turbo run dev:app",
+    "build": "turbo run build:app",
+    "lint": "turbo run lint:app",
+    "type-check": "turbo run type-check:app",
+    "api:generate": "turbo run sdk:generate --filter=@starter/web",
+    "test:smoke": "pnpm --filter @starter/api exec node --test test/smoke.mjs",
+    "infra:up": "docker compose --env-file apps/api/.env -f compose.yaml up -d",
+    "infra:down": "docker compose --env-file apps/api/.env -f compose.yaml down"
   },
   "devDependencies": {
+    "oxlint": "1.87.0",
+    "oxlint-tsgolint": "7.0.2003",
     "turbo": "2.11.10"
   }
 }

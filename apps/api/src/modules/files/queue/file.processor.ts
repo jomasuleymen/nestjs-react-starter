@@ -16,6 +16,7 @@ export class FileProcessor extends WorkerHost {
 
   async process(job: Job<FileCleanupJobPayload, void, FileJobName>): Promise<void> {
     if (job.name !== FileJobName.Cleanup) {
+      // oxlint-disable-next-line typescript/restrict-template-expressions -- Redis can contain jobs from a different version.
       throw new Error(`Unknown file job: ${job.name}`);
     }
     const result = await this.cleanupService.cleanup();

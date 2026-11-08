@@ -1,0 +1,30 @@
+enum FileStatus {
+  PENDING
+  READY
+  DELETING
+  DELETED
+}
+
+model File {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerUserId     String     @map("owner_user_id") @db.Uuid
+  owner           User       @relation("FileOwner", fields: [ownerUserId], references: [id], onDelete: Restrict)
+  bucket          String     @db.VarChar(255)
+  key             String     @db.VarChar(1024)
+  originalName    String     @map("original_name") @db.VarChar(255)
+  contentType     String     @map("content_type") @db.VarChar(255)
+  sizeBytes       Int        @map("size_bytes")
+  checksumSha256  String?    @map("checksum_sha256") @db.Char(64)
+  status          FileStatus @default(PENDING)
+  uploadExpiresAt DateTime?  @map("upload_expires_at")
+  readyAt         DateTime?  @map("ready_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
+  deletedAt       DateTime?  @map("deleted_at")
+
+  @@unique([bucket, key])
+  @@index([ownerUserId, status, createdAt])
+  @@index([status, createdAt])
+  @@index([status, uploadExpiresAt])
+  @@map("files")
+}

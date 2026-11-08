@@ -7,8 +7,6 @@ import { compression } from 'vite-plugin-compression2';
 
 const appRoot = fileURLToPath(new URL('.', import.meta.url));
 
-const resolvePath = (path: string) => fileURLToPath(new URL(path, import.meta.url));
-
 export default defineConfig(({ command, isPreview, mode }) => {
   const isDev = command === 'serve' && !isPreview;
   const isProd = command === 'build';
@@ -45,14 +43,7 @@ export default defineConfig(({ command, isPreview, mode }) => {
 
     resolve: {
       dedupe: ['react', 'react-dom'],
-
-      alias: {
-        '@app': resolvePath('./src/app'),
-        '@routes': resolvePath('./src/routes'),
-        '@modules': resolvePath('./src/modules'),
-        '@api': resolvePath('./src/api'),
-        '@shared': resolvePath('./src/shared'),
-      },
+      tsconfigPaths: true,
     },
 
     build: {
