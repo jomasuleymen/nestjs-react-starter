@@ -9,36 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProtectedWorkspaceRouteImport } from './routes/_protected/workspace'
-import { Route as ProtectedFilesRouteImport } from './routes/_protected/files'
-import { Route as systemNotFoundRouteImport } from './routes/(system)/not-found'
-import { Route as systemNoAccessRouteImport } from './routes/(system)/no-access'
+import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as systemNoAccessRouteImport } from './routes/(system)/no-access'
+import { Route as systemNotFoundRouteImport } from './routes/(system)/not-found'
+import { Route as ProtectedFilesRouteImport } from './routes/_protected/files'
+import { Route as ProtectedWorkspaceRouteImport } from './routes/_protected/workspace'
 
-const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
-  id: '/_protected',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedWorkspaceRoute = ProtectedWorkspaceRouteImport.update({
-  id: '/workspace',
-  path: '/workspace',
-  getParentRoute: () => ProtectedRouteRoute,
+const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedFilesRoute = ProtectedFilesRouteImport.update({
-  id: '/files',
-  path: '/files',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
-const systemNotFoundRoute = systemNotFoundRouteImport.update({
-  id: '/(system)/not-found',
-  path: '/not-found',
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const systemNoAccessRoute = systemNoAccessRouteImport.update({
@@ -46,10 +36,20 @@ const systemNoAccessRoute = systemNoAccessRouteImport.update({
   path: '/no-access',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authLoginRoute = authLoginRouteImport.update({
-  id: '/(auth)/login',
-  path: '/login',
+const systemNotFoundRoute = systemNotFoundRouteImport.update({
+  id: '/(system)/not-found',
+  path: '/not-found',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProtectedFilesRoute = ProtectedFilesRouteImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedWorkspaceRoute = ProtectedWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -105,13 +105,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_protected': {
-      id: '/_protected'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof ProtectedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -119,25 +112,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/workspace': {
-      id: '/_protected/workspace'
-      path: '/workspace'
-      fullPath: '/workspace'
-      preLoaderRoute: typeof ProtectedWorkspaceRouteImport
-      parentRoute: typeof ProtectedRouteRoute
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_protected/files': {
-      id: '/_protected/files'
-      path: '/files'
-      fullPath: '/files'
-      preLoaderRoute: typeof ProtectedFilesRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
-    '/(system)/not-found': {
-      id: '/(system)/not-found'
-      path: '/not-found'
-      fullPath: '/not-found'
-      preLoaderRoute: typeof systemNotFoundRouteImport
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(system)/no-access': {
@@ -147,12 +133,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof systemNoAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/login': {
-      id: '/(auth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginRouteImport
+    '/(system)/not-found': {
+      id: '/(system)/not-found'
+      path: '/not-found'
+      fullPath: '/not-found'
+      preLoaderRoute: typeof systemNotFoundRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_protected/files': {
+      id: '/_protected/files'
+      path: '/files'
+      fullPath: '/files'
+      preLoaderRoute: typeof ProtectedFilesRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/workspace': {
+      id: '/_protected/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof ProtectedWorkspaceRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
   }
 }
