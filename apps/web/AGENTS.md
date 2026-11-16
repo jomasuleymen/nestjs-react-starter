@@ -40,21 +40,21 @@ check, lint или build) и честно сообщайте её результ
 Имя файла отражает его основной экспорт. Не смешивайте PascalCase, camelCase и
 kebab-case без причины.
 
-| Назначение | Формат файла | Примеры |
-| --- | --- | --- |
-| React-компонент | PascalCase | `UserCard.tsx`, `LoginForm.tsx` |
-| Layout | PascalCase | `AppLayout.tsx`, `DashboardLayout.tsx` |
-| Страница | PascalCase с суффиксом `Page` | `DashboardPage.tsx`, `LoginPage.tsx` |
-| Контекст | PascalCase | `AuthContext.tsx`, `ThemeContext.tsx` |
-| Provider | PascalCase | `AuthProvider.tsx`, `ThemeProvider.tsx` |
-| Hook | camelCase | `useAuth.ts`, `useBreakpoint.ts` |
-| Сервис | camelCase | `authService.ts`, `reportService.ts` |
-| API-модуль | camelCase | `authApi.ts`, `userApi.ts` |
-| Утилита | camelCase | `formatCurrency.ts`, `downloadFile.ts` |
-| Типы | camelCase | `user.ts`, `auth.ts` |
-| Схема | camelCase | `loginSchema.ts`, `profileSchema.ts` |
-| Константы | camelCase | `routes.ts`, `permissions.ts`, `breakpoints.ts` |
-| Barrel-файл | только `index.ts` | `index.ts` |
+| Назначение      | Формат файла                  | Примеры                                         |
+| --------------- | ----------------------------- | ----------------------------------------------- |
+| React-компонент | PascalCase                    | `UserCard.tsx`, `LoginForm.tsx`                 |
+| Layout          | PascalCase                    | `AppLayout.tsx`, `DashboardLayout.tsx`          |
+| Страница        | PascalCase с суффиксом `Page` | `DashboardPage.tsx`, `LoginPage.tsx`            |
+| Контекст        | PascalCase                    | `AuthContext.tsx`, `ThemeContext.tsx`           |
+| Provider        | PascalCase                    | `AuthProvider.tsx`, `ThemeProvider.tsx`         |
+| Hook            | camelCase                     | `useAuth.ts`, `useBreakpoint.ts`                |
+| Сервис          | camelCase                     | `authService.ts`, `reportService.ts`            |
+| API-модуль      | camelCase                     | `authApi.ts`, `userApi.ts`                      |
+| Утилита         | camelCase                     | `formatCurrency.ts`, `downloadFile.ts`          |
+| Типы            | camelCase                     | `user.ts`, `auth.ts`                            |
+| Схема           | camelCase                     | `loginSchema.ts`, `profileSchema.ts`            |
+| Константы       | camelCase                     | `routes.ts`, `permissions.ts`, `breakpoints.ts` |
+| Barrel-файл     | только `index.ts`             | `index.ts`                                      |
 
 React-компоненты всегда называются PascalCase, а их файл совпадает с именем
 экспортируемого компонента. Все остальные обычные файлы используют camelCase.

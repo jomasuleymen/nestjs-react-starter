@@ -19,6 +19,9 @@ export class ExceptionResponseDto {
   method: string;
   requestId?: string;
 
-  @ApiPropertyOptional({ type: () => ValidationErrorResponseDto, isArray: true })
+  @ApiPropertyOptional({
+    type: () => ValidationErrorResponseDto,
+    isArray: true,
+  })
   validationErrors?: ValidationErrorResponseDto[];
 }

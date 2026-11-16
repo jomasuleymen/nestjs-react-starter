@@ -28,7 +28,11 @@ export class FileCleanupService {
       orderBy: { updatedAt: 'asc' },
       take: FILE_CLEANUP.BATCH_SIZE,
     });
-    const result: FileCleanupResult = { expiredUploads: 0, deletedObjects: 0, failedObjects: 0 };
+    const result: FileCleanupResult = {
+      expiredUploads: 0,
+      deletedObjects: 0,
+      failedObjects: 0,
+    };
 
     for (const file of files) {
       if (file.status === FileStatus.PENDING) {
@@ -44,7 +48,11 @@ export class FileCleanupService {
 
   private async claimExpiredUpload(fileId: string, now: Date): Promise<boolean> {
     const updated = await this.prisma.file.updateMany({
-      where: { id: fileId, status: FileStatus.PENDING, uploadExpiresAt: { lte: now } },
+      where: {
+        id: fileId,
+        status: FileStatus.PENDING,
+        uploadExpiresAt: { lte: now },
+      },
       data: { status: FileStatus.DELETING, deletedAt: now },
     });
 

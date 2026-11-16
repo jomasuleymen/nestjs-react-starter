@@ -40,7 +40,7 @@ Its endpoint must be reachable by the browser, not just by Docker containers.
 To run only the frontend with an existing API:
 
 ```sh
-pnpm --filter ./apps/web run dev
+pnpm dev --filter=@starter/web
 ```
 
 ## Generated code and checks
@@ -49,12 +49,19 @@ Run from the monorepo root:
 
 ```sh
 pnpm api:generate
-pnpm --filter ./apps/web run check
-pnpm --filter ./apps/web run build
+pnpm lint --filter=@starter/web
+pnpm typecheck --filter=@starter/web
+pnpm build --filter=@starter/web
 ```
 
 Turbo exports OpenAPI from Nest to `apps/api/.generated/openapi.json` and
-generates the SDK and route tree locally before web commands that need them.
+generates the SDK and route tree before root Turbo commands that need them.
+Direct app scripts bypass generation; use them once prerequisites exist.
+Type checking uses `tsc --noEmit` for browser and tooling code separately.
+Builds still check types before Vite bundles the app. Formatting and the Oxlint
+installation are maintained at the root. This app's `.oxlintrc.json` extends the
+root baseline and owns its React/accessibility rules, import boundaries, and
+generated-code exclusions.
 Run `pnpm api:generate` again after changing API DTOs during development.
 For a one-off override, run `OPENAPI_INPUT=/path/to/openapi.json pnpm --filter
 ./apps/web exec openapi-ts`. The normal Turbo workflow uses the local export.

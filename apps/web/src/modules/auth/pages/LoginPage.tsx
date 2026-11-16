@@ -39,7 +39,13 @@ export const LoginPage = ({ notice, onSuccess }: LoginPageProps) => {
         background: token.colorBgLayout,
       }}
     >
-      <Card size="small" style={{ width: 'min(100%, 360px)', boxShadow: token.boxShadowSecondary }}>
+      <Card
+        size="small"
+        style={{
+          width: 'min(100%, 360px)',
+          boxShadow: token.boxShadowSecondary,
+        }}
+      >
         <div
           style={{
             display: 'flex',
@@ -80,7 +86,11 @@ export const LoginPage = ({ notice, onSuccess }: LoginPageProps) => {
             name="login"
             rules={[
               { required: true, message: 'Введите логин' },
-              { min: 3, max: 50, message: 'Логин должен содержать от 3 до 50 символов' },
+              {
+                min: 3,
+                max: 50,
+                message: 'Логин должен содержать от 3 до 50 символов',
+              },
             ]}
           >
             <Input autoComplete="username" autoFocus />

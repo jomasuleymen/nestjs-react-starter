@@ -19,45 +19,46 @@ function getRequestId(req: IncomingMessage): string {
   return requestId ?? randomUUID();
 }
 
-const basePinoHttpConfig = (envConfigService: EnvConfigService) => ({
-  level: envConfigService.getLogLevel(),
-  timestamp: pino.stdTimeFunctions.isoTime,
-  genReqId: getRequestId,
-  formatters: {
-    level: (label) => ({ level: label.toUpperCase() }),
-  },
-  redact: {
-    paths: [
-      'req.headers.authorization',
-      'req.headers.cookie',
-      'res.headers["set-cookie"]',
-      '*.password',
-      '*.token',
-      '*.accessToken',
-      '*.refreshToken',
-      '*.secret',
-      '*.accessKey',
-      '*.secretKey',
-    ],
-    censor: '[REDACTED]',
-  },
-  serializers: {
-    err: pino.stdSerializers.err,
-    req: (req) => ({
-      id: req.id,
-      method: req.method,
-      url: req.url,
-      remoteAddress: req.remoteAddress,
-      remotePort: req.remotePort,
-    }),
-    res: (res) => ({
-      statusCode: res.statusCode,
-    }),
-  },
-  autoLogging: {
-    ignore: (req) => HEALTH_CHECK_PATHS.has(req.url ?? ''),
-  },
-} satisfies Params['pinoHttp']);
+const basePinoHttpConfig = (envConfigService: EnvConfigService) =>
+  ({
+    level: envConfigService.getLogLevel(),
+    timestamp: pino.stdTimeFunctions.isoTime,
+    genReqId: getRequestId,
+    formatters: {
+      level: (label) => ({ level: label.toUpperCase() }),
+    },
+    redact: {
+      paths: [
+        'req.headers.authorization',
+        'req.headers.cookie',
+        'res.headers["set-cookie"]',
+        '*.password',
+        '*.token',
+        '*.accessToken',
+        '*.refreshToken',
+        '*.secret',
+        '*.accessKey',
+        '*.secretKey',
+      ],
+      censor: '[REDACTED]',
+    },
+    serializers: {
+      err: pino.stdSerializers.err,
+      req: (req) => ({
+        id: req.id,
+        method: req.method,
+        url: req.url,
+        remoteAddress: req.remoteAddress,
+        remotePort: req.remotePort,
+      }),
+      res: (res) => ({
+        statusCode: res.statusCode,
+      }),
+    },
+    autoLogging: {
+      ignore: (req) => HEALTH_CHECK_PATHS.has(req.url ?? ''),
+    },
+  }) satisfies Params['pinoHttp'];
 
 const getProductionConfig = (envConfigService: EnvConfigService): Params => ({
   pinoHttp: basePinoHttpConfig(envConfigService),

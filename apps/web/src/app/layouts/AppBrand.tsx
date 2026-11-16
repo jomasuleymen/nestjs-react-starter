@@ -24,7 +24,11 @@ export const AppBrand = ({ collapsed = false, extra }: AppBrandProps) => {
       <Avatar
         shape="square"
         size="small"
-        style={{ background: token.colorPrimaryBg, color: token.colorPrimary, fontWeight: 700 }}
+        style={{
+          background: token.colorPrimaryBg,
+          color: token.colorPrimary,
+          fontWeight: 700,
+        }}
       >
         S
       </Avatar>

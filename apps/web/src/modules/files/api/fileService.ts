@@ -45,7 +45,12 @@ const readFile = (file: File, signal?: AbortSignal): Promise<ArrayBuffer> =>
     });
     reader.addEventListener('error', () => {
       cleanup();
-      reject(new ApiError('Не удалось прочитать файл', { cause: reader.error, kind: 'unknown' }));
+      reject(
+        new ApiError('Не удалось прочитать файл', {
+          cause: reader.error,
+          kind: 'unknown',
+        }),
+      );
     });
     reader.addEventListener('abort', () => {
       cleanup();

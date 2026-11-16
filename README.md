@@ -7,10 +7,10 @@ for migration.
 
 ## Source baseline
 
-| Application | Source Git commit |
-| --- | --- |
-| API | `506f07c8246bddc7556340d128e0897bc418161b` |
-| Web | `ebde7b0e077de05b872737496e4c57380d53f5b4` |
+| Application | Source Git commit                          |
+| ----------- | ------------------------------------------ |
+| API         | `506f07c8246bddc7556340d128e0897bc418161b` |
+| Web         | `ebde7b0e077de05b872737496e4c57380d53f5b4` |
 
 Both source worktrees were clean at initial inspection. Keep them intact as the
 reference and fallback while building the monorepo in this directory.
@@ -30,6 +30,63 @@ existing OpenAPI contract with hand-written shared types.
 
 Package-manager and task configuration may need small compatibility adjustments.
 Record each adjustment separately from application logic changes.
+
+## Workspace configuration
+
+The root owns workspace orchestration and shared tooling policy. Each app owns its
+framework configuration and commands; application code stays inside `apps/api`
+and `apps/web`. There is no `packages` workspace.
+
+| Location                                                                 | Responsibility                                                                                                       |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `package.json`, `pnpm-workspace.yaml`, `.npmrc`, `.node-version`         | Workspace commands, package-manager/runtime versions, strict engines, exact versions for future dependency additions |
+| `turbo.json`                                                             | Common `dev`, `build`, `lint`, and `typecheck` tasks                                                                 |
+| `.prettierrc`, `.prettierignore`, `.oxlintrc.json`                       | Shared formatting and lint baseline                                                                                  |
+| `.editorconfig`, `.gitattributes`, `.vscode/`                            | Editor settings and LF line endings                                                                                  |
+| `.gitignore`                                                             | Dependency, build, generated-code, and local environment exclusions                                                  |
+| `tsconfig.base.json`                                                     | Shared strict TypeScript rules; module formats and aliases stay app-specific                                         |
+| `apps/api/turbo.json`, `apps/web/turbo.json`                             | App-specific generation dependencies, cache outputs, and environment handling                                        |
+| `apps/api/tsconfig.json`, `tsconfig.build.json`, `tsconfig.openapi.json` | API/tooling type checks, production compilation, and offline OpenAPI compilation                                     |
+| `apps/web/tsconfig*.json`, `vite.config.ts`, `openapi-ts.config.ts`      | Browser/tooling type checks, Vite, and SDK generation                                                                |
+
+App scripts run their tools directly. Use root commands with `--filter` when
+generation dependencies must run first, including on a fresh checkout:
+
+```sh
+pnpm dev --filter=@starter/web
+pnpm build --filter=@starter/api
+pnpm typecheck --filter=@starter/web
+```
+
+Direct commands such as `pnpm --filter @starter/web dev` intentionally bypass
+Turbo; generate prerequisites first. Keep environment files local to each app.
+API startup, background roles, Swagger, frontend routing, and application module
+layouts retain their existing behavior.
+
+Formatting is owned by the root: `pnpm format` and `pnpm format:check` use the
+single root Prettier installation and configuration. Oxlint and its type-aware
+companion are also installed only at the root, alongside Prettier and Turbo.
+Generated code and database migrations are excluded from formatting. Prettier
+does not reorder imports.
+
+Each app owns a `.oxlintrc.json` extending `../../.oxlintrc.json`. The root config
+contains common TypeScript rules; the API config adds its Node environment and
+generated-code exclusions, while the web config owns browser/React/accessibility
+rules, import boundaries, and its generated-code exclusions. App lint scripts
+select their local config explicitly, using the shared root executable.
+
+Run `pnpm lint` for all apps, or `pnpm --filter @starter/web lint` for one app.
+A future `packages/<name>` workspace can use the same local-config pattern with
+`"extends": ["../../.oxlintrc.json"]` and its own lint script; no additional
+Oxlint installation is needed. Declare its `plugins` explicitly, as the app
+configs do, to avoid re-enabling Oxlint's default plugins when extending a base.
+This repository still includes only `apps/*`.
+
+pnpm uses strict Node.js engines, exact versions for new dependencies, and an
+explicit dependency build-script allowlist. Existing
+application dependency ranges and locked versions are retained. The target has
+no peer-version exceptions: the source's `nestjs-zod` overrides do not apply to
+this app's class-validator/class-transformer stack.
 
 ## Naming a new project
 
@@ -117,26 +174,52 @@ Run from the repository root:
 pnpm dev
 pnpm build
 pnpm lint
-pnpm type-check
+pnpm typecheck
 pnpm api:generate
+pnpm format:check
+pnpm db:seed
 ```
+
+`pnpm format` applies the shared format. Formatting commands exist only at the
+root; use `pnpm typecheck` for type checks.
+
+Database commands live in the API package:
+
+```sh
+pnpm --filter @starter/api db:generate
+pnpm --filter @starter/api db:validate
+pnpm --filter @starter/api db:deploy
+pnpm --filter @starter/api db:studio
+```
+
+`db:migrate` creates/applies development migrations; `db:reset` is destructive.
+These commands are manual, never part of install, dev, or CI.
+
+`pnpm db:seed` builds a standalone Nest entrypoint and creates an active admin
+from `SEED_ADMIN_LOGIN` and `SEED_ADMIN_PASSWORD` in `apps/api/.env` or the shell.
+Use a login of 3–50 characters and a password of
+at least 12 characters and at most 72 UTF-8 bytes. Login is trimmed and lowercased,
+matching authentication. The seed never updates existing accounts or passwords;
+it fails if the selected account is not an active admin. It requires the normal
+API environment and database schema, does not start HTTP/Redis/S3 clients, and
+never applies migrations. Turbo never caches it.
 
 API `dev` delegates to the HTTP watch command. Run the background roles
 separately as described in the [API guide](apps/api/README.md).
 Copy `apps/api/.env.example` to `apps/api/.env` and configure it before running
 `pnpm infra:up`. Use `pnpm infra:down` to stop the local infrastructure.
 
-`dev` is persistent and uncached. Turbo caches the generation tasks and the
-web build locally. API builds, lint and type checks run without caching.
-
-After building, `pnpm test:smoke` checks authentication and signed file uploads
-and downloads. It requires a local Docker daemon and uses a disposable Compose
-project with its own PostgreSQL database and storage bucket.
+`dev` is persistent and uncached. Turbo caches generation, builds, lint, and
+type checks locally. App task dependencies preserve the Prisma → OpenAPI → SDK
+generation chain and TanStack route generation. Shared compiler/lint/formatting
+configuration and frontend build environment files participate in the relevant
+cache keys. Production compilation preserves `apps/api/dist/main.js` and
+`apps/api/dist/background.js`.
 
 To inspect the task graph without running application commands:
 
 ```sh
-pnpm exec turbo run dev:app build:app lint:app type-check:app --dry=json
+pnpm exec turbo run dev build lint typecheck --dry=json
 ```
 
 ## API migration adjustments
@@ -165,15 +248,14 @@ was performed. For a normal local setup, configure the API environment in
 `apps/api` before generating the client or building:
 
 ```sh
-pnpm --filter ./apps/api run prisma:generate
-pnpm --filter ./apps/api run type-check --tsBuildInfoFile /dev/null
+pnpm --filter ./apps/api run db:generate
+pnpm typecheck --filter=@starter/api
 pnpm --filter ./apps/api run lint
 ```
 
-The type-check command discards the incremental cache on this macOS/Linux setup
-while preserving the original TypeScript configuration. API startup also requires
-the services and settings described in its original docs; those have not been
-provisioned during this stage.
+Type checks do not emit JavaScript or incremental cache files. API startup also
+requires the services and settings described in its original docs; those have
+not been provisioned during this stage.
 
 ## Current verification boundary
 
@@ -204,8 +286,8 @@ differs from the source business application.
   queue payload contracts, not the removed business contracts domain.
 
 This is a fresh-project schema, not a migration for an existing source database.
-Initial account provisioning and fresh database migration generation
-are not implemented in this stage; no database migrations were run.
+The standalone `pnpm db:seed` command now provides initial admin provisioning.
+No database migrations or seed writes were run by the agent.
 
 Cleanup verification passed: Prisma client generation and schema validation,
 TypeScript 6 checking without emit, lint without autofix, Turbo dry-run assertions,

@@ -11,24 +11,22 @@ pnpm install --frozen-lockfile --ignore-scripts
 Run installation from the monorepo root. Prisma Client and the OpenAPI export can
 be generated without API runtime configuration or services.
 If you use a direct `start:*` command before running a Turbo task, run
-`pnpm --filter ./apps/api run prisma:generate` first.
+`pnpm --filter ./apps/api run db:generate` first.
 
 The Prisma schema contains only `User`, `Session`, and `File`, with `USER` and
 `ADMIN` roles. It is a fresh-project schema, not a migration for an existing
-source database. No database changes are applied automatically. Initial user
-provisioning is not included; the project-specific SQL account script was removed.
-
+source database. No database changes are applied automatically.
 ## Local infrastructure
 
 Copy `.env.example` to `.env` in this directory and configure the local services.
 Run `pnpm infra:up` and `pnpm infra:down` from the repository root. The root
 Compose file reads `apps/api/.env` and pins these releases:
 
-| Service | Image |
-| --- | --- |
+| Service    | Image                  |
+| ---------- | ---------------------- |
 | PostgreSQL | `postgres:18.6-alpine` |
-| Redis | `redis:8.10.3-alpine` |
-| S3 storage | `rustfs/rustfs:1.0.4` |
+| Redis      | `redis:8.10.3-alpine`  |
+| S3 storage | `rustfs/rustfs:1.0.4`  |
 
 PostgreSQL 18.6 is the current stable release; 19 is still a release candidate.
 See the [PostgreSQL version table](https://www.postgresql.org/support/versioning/).
@@ -83,10 +81,24 @@ API routes use the `/api` prefix.
 ## Quality
 
 ```bash
-pnpm --filter ./apps/api run type-check --tsBuildInfoFile /dev/null
+pnpm typecheck --filter=@starter/api
 pnpm lint
 pnpm build
 ```
+
+The root Turbo commands generate Prisma Client before API checks and builds.
+App scripts invoke tools directly; `pnpm --filter ./apps/api run typecheck`
+checks existing sources without generating files. `tsconfig.json` covers API
+sources and tooling configuration; Nest uses `tsconfig.build.json` so production
+entrypoints remain `dist/main.js` and `dist/background.js`. OpenAPI export uses
+`tsconfig.openapi.json` and keeps its separate `.generated/nest` output.
+
+Run `pnpm format` or `pnpm format:check` from the root; formatting is not an app
+task. Database commands use the `db:*` prefix (`db:generate`, `db:migrate`,
+`db:deploy`, `db:seed`, `db:studio`, `db:validate`, `db:reset`).
+
+Oxlint is installed at the root. This app's `.oxlintrc.json` extends the root
+baseline and adds its Node environment and generated-code exclusions.
 
 ## Architecture
 

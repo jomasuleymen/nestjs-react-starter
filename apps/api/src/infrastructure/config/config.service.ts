@@ -48,13 +48,17 @@ export class EnvConfigService {
   }
 
   getJwtAccessTokenTtlSeconds(): number {
-    const value = this.configService.getOrThrow('JWT_ACCESS_TOKEN_TTL', { infer: true });
+    const value = this.configService.getOrThrow('JWT_ACCESS_TOKEN_TTL', {
+      infer: true,
+    });
 
     return Math.floor(ms(value as ms.StringValue) / ms('1s'));
   }
 
   getJwtRefreshTokenTtlSeconds(): number {
-    const value = this.configService.getOrThrow('JWT_REFRESH_TOKEN_TTL', { infer: true });
+    const value = this.configService.getOrThrow('JWT_REFRESH_TOKEN_TTL', {
+      infer: true,
+    });
 
     return Math.floor(ms(value as ms.StringValue) / ms('1s'));
   }
@@ -138,6 +142,8 @@ export class EnvConfigService {
   }
 
   getS3ForcePathStyle(): boolean {
-    return this.configService.getOrThrow('S3_FORCE_PATH_STYLE', { infer: true });
+    return this.configService.getOrThrow('S3_FORCE_PATH_STYLE', {
+      infer: true,
+    });
   }
 }

@@ -1,8 +1,9 @@
 {
+  "$schema": "../../node_modules/turbo/schema.json",
   "extends": ["//"],
   "tasks": {
-    "dev:app": {
-      "dependsOn": ["prisma:generate"],
+    "dev": {
+      "dependsOn": ["db:generate"],
       "passThroughEnv": [
         "NODE_ENV",
         "PORT",
@@ -15,8 +16,30 @@
         "S3_*"
       ]
     },
-    "build:app": { "dependsOn": ["prisma:generate"] },
-    "type-check:app": { "dependsOn": ["prisma:generate"] },
-    "lint:app": { "dependsOn": ["prisma:generate"] }
+    "build": { "dependsOn": ["db:generate"] },
+    "typecheck": { "dependsOn": ["db:generate"] },
+    "lint": { "dependsOn": ["db:generate"] },
+    "db:seed": {
+      "dependsOn": ["db:generate"],
+      "passThroughEnv": [
+        "NODE_ENV",
+        "PORT",
+        "CORS_*",
+        "LOG_LEVEL",
+        "JWT_*",
+        "DATABASE_*",
+        "REDIS_*",
+        "S3_*",
+        "SEED_ADMIN_*"
+      ]
+    },
+    "db:generate": {
+      "inputs": ["package.json", "prisma.config.ts", "prisma/**/*.prisma"],
+      "outputs": ["src/generated/prisma/**"]
+    },
+    "openapi:export": {
+      "dependsOn": ["db:generate"],
+      "outputs": [".generated/openapi.json"]
+    }
   }
 }

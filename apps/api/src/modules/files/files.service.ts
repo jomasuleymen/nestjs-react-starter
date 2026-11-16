@@ -122,7 +122,9 @@ export class FilesService {
 
   async delete(ownerUserId: string, fileId: string): Promise<void> {
     const file = await this.prisma.$transaction(async (tx) => {
-      const current = await tx.file.findFirst({ where: { id: fileId, ownerUserId } });
+      const current = await tx.file.findFirst({
+        where: { id: fileId, ownerUserId },
+      });
       if (!current) throw new NotFoundException('Файл не найден');
       if (current.status === FileStatus.DELETED || current.status === FileStatus.DELETING) {
         return null;
@@ -155,7 +157,9 @@ export class FilesService {
   }
 
   private async findOwnedFile(ownerUserId: string, fileId: string): Promise<File> {
-    const file = await this.prisma.file.findFirst({ where: { id: fileId, ownerUserId } });
+    const file = await this.prisma.file.findFirst({
+      where: { id: fileId, ownerUserId },
+    });
     if (!file) {
       throw new NotFoundException('Файл не найден');
     }
@@ -181,7 +185,11 @@ export class FilesService {
 
   private validateStoredObject(
     file: File,
-    metadata: { contentLength: number; contentType?: string; checksumSha256?: string },
+    metadata: {
+      contentLength: number;
+      contentType?: string;
+      checksumSha256?: string;
+    },
   ): void {
     if (metadata.contentLength !== file.sizeBytes || metadata.contentType !== file.contentType) {
       throw new BadRequestException('Загруженный объект не соответствует заявленным параметрам');

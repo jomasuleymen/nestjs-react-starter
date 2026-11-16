@@ -12,8 +12,12 @@ const uploadRequest = createAntdUploadRequest();
 
 export const FilesPage = () => {
   const { message } = App.useApp();
-  const download = useFileDownload({ onError: (error) => void message.error(error.message) });
-  const remove = useFileDelete({ onError: (error) => void message.error(error.message) });
+  const download = useFileDownload({
+    onError: (error) => void message.error(error.message),
+  });
+  const remove = useFileDelete({
+    onError: (error) => void message.error(error.message),
+  });
 
   return (
     <PageLayout

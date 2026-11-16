@@ -60,7 +60,14 @@ export const AppHeader = () => {
           />
         </Tooltip>
       </div>
-      <div style={{ display: 'flex', flex: '0 0 auto', alignItems: 'center', gap: token.marginXS }}>
+      <div
+        style={{
+          display: 'flex',
+          flex: '0 0 auto',
+          alignItems: 'center',
+          gap: token.marginXS,
+        }}
+      >
         <ColorSchemeSwitch />
         <Tooltip title="Уведомления">
           <Dropdown menu={notificationMenu} placement="bottomRight" trigger={['click']}>

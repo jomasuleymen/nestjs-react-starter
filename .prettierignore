@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.turbo
+.generated
+*.tsbuildinfo
+*.log
+pnpm-lock.yaml
+apps/api/src/generated
+apps/api/prisma/migrations
+apps/web/src/api/generated
+apps/web/src/routeTree.gen.ts
+.agents

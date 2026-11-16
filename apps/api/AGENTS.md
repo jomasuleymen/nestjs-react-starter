@@ -9,6 +9,7 @@
 - **Validation**: class-validator, class-transformer
 - **Logging**: Pino (nestjs-pino)
 - **Auth**: JWT, Throttler
+
 ---
 
 ## Core Principles
@@ -30,18 +31,18 @@
 
 ```bash
 # Development
-pnpm run start:api:dev  # Watch mode
+pnpm run start:dev      # Watch mode
 pnpm run start:debug    # Debug mode
 
 # Production
 pnpm run build
-pnpm run start:api:prod
+pnpm run start:prod
 
 # Quality
 pnpm run lint            # Check
 pnpm run lint:fix        # Auto-fix
-pnpm run prettier:format # Format
-pnpm run type-check      # TypeScript (tsc --noEmit)
+pnpm -w run format       # Format the monorepo
+pnpm run typecheck       # TypeScript (tsc --noEmit)
 
 # Database
 docker compose up -d    # Start PostgreSQL + Redis
@@ -72,7 +73,8 @@ docker compose up -d    # Start PostgreSQL + Redis
 7. **Overfetching** – Use `select` to limit columns
 8. **Raw `.then()` Chains** – Use async/await
 9. dont write raw sql files. only prisma orm.
-10. dont run prisma mirgrations, 
+10. dont run prisma mirgrations,
+
 ---
 
 ## Plan Mode

@@ -27,7 +27,9 @@ export const createAntdUploadRequest =
 
     if (!(request.file instanceof File)) {
       request.onError?.(
-        new ApiError('Компонент загрузки не передал объект File', { kind: 'validation' }),
+        new ApiError('Компонент загрузки не передал объект File', {
+          kind: 'validation',
+        }),
       );
       return { abort: () => controller.abort() };
     }

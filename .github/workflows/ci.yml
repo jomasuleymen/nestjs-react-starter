@@ -24,8 +24,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm format:check
       - run: pnpm api:generate
       - run: pnpm lint
-      - run: pnpm type-check
+      - run: pnpm typecheck
       - run: pnpm build
-      - run: pnpm test:smoke

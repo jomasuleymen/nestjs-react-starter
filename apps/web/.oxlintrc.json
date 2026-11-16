@@ -1,0 +1,160 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../.oxlintrc.json"],
+  "plugins": ["typescript", "import"],
+  "ignorePatterns": ["dist/**", "src/api/generated/**", "src/routeTree.gen.ts"],
+  "overrides": [
+    { "files": ["*.config.ts"], "env": { "node": true } },
+    {
+      "files": ["src/**"],
+      "env": { "browser": true },
+      "plugins": ["typescript", "import", "react", "jsx-a11y"],
+      "rules": {
+        "typescript/no-explicit-any": "error",
+        "typescript/switch-exhaustiveness-check": "error",
+        "import/no-cycle": "error",
+        "react/rules-of-hooks": "error",
+        "react/exhaustive-deps": "error",
+        "jsx-a11y/alt-text": "error",
+        "jsx-a11y/anchor-is-valid": "error",
+        "jsx-a11y/click-events-have-key-events": "error",
+        "jsx-a11y/label-has-associated-control": "error"
+      }
+    },
+    {
+      "files": ["src/app/**", "src/api/**", "src/modules/**", "src/shared/**"],
+      "rules": {
+        "react/only-export-components": ["error", { "allowConstantExport": true }]
+      }
+    },
+    {
+      "files": ["src/*.{ts,tsx}", "src/app/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              { "group": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less"] },
+              {
+                "group": ["@modules/*/*"],
+                "message": "Import modules through their public exports."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/routes/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "@modules/*/*"]
+              },
+              {
+                "group": ["@app/**", "!@app/layouts", "!@app/layouts/**"],
+                "message": "Routes may import app code only through app/layouts."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/modules/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "@modules/*/*"]
+              },
+              {
+                "group": [
+                  "@app",
+                  "@app/**",
+                  "**/app",
+                  "**/app/**",
+                  "@routes",
+                  "@routes/**",
+                  "**/routes",
+                  "**/routes/**"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/api/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "@modules/*/*"]
+              },
+              {
+                "group": [
+                  "@app",
+                  "@app/**",
+                  "**/app",
+                  "**/app/**",
+                  "@modules",
+                  "@modules/**",
+                  "**/modules",
+                  "**/modules/**",
+                  "@routes",
+                  "@routes/**",
+                  "**/routes",
+                  "**/routes/**"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/shared/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["**/*.css", "**/*.scss", "**/*.sass", "**/*.less", "@modules/*/*"]
+              },
+              {
+                "group": [
+                  "@api",
+                  "@api/**",
+                  "**/api",
+                  "**/api/**",
+                  "@app",
+                  "@app/**",
+                  "**/app",
+                  "**/app/**",
+                  "@modules",
+                  "@modules/**",
+                  "**/modules",
+                  "**/modules/**",
+                  "@routes",
+                  "@routes/**",
+                  "**/routes",
+                  "**/routes/**"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

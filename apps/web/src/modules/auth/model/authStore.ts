@@ -34,7 +34,10 @@ const toAuthUser = (dto: AuthUserDto): AuthUser => {
   };
 };
 
-const store = createStore<AuthState>()(() => ({ status: 'bootstrapping', user: null }));
+const store = createStore<AuthState>()(() => ({
+  status: 'bootstrapping',
+  user: null,
+}));
 
 let sessionBootstrap: Promise<AuthState> | null = null;
 let bootstrapGeneration = 0;

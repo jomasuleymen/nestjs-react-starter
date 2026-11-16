@@ -7,22 +7,14 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "pnpm -w run dev --filter=@starter/web",
-    "dev:app": "vite",
-    "api:generate": "pnpm -w run api:generate",
+    "dev": "vite",
     "sdk:generate": "openapi-ts",
     "routes:generate": "tsr generate",
-    "build": "pnpm -w run build --filter=@starter/web",
-    "build:app": "tsc -b --pretty false && vite build",
+    "build": "pnpm run typecheck && vite build",
     "preview": "vite preview",
-    "check": "pnpm run lint && pnpm run type-check && pnpm run format:check",
-    "type-check": "pnpm -w run type-check --filter=@starter/web",
-    "type-check:app": "tsc -b --pretty false",
-    "lint": "pnpm -w run lint --filter=@starter/web",
-    "lint:app": "pnpm -w exec oxlint apps/web/src apps/web/vite.config.ts apps/web/openapi-ts.config.ts",
-    "lint:fix": "pnpm -w run lint --filter=@starter/web -- --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
+    "lint": "oxlint --type-aware --deny-warnings -c .oxlintrc.json src/ vite.config.ts openapi-ts.config.ts",
+    "lint:fix": "pnpm run lint --fix"
   },
   "dependencies": {
     "@ant-design/icons": "6.3.2",
@@ -45,8 +37,6 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "prettier": "^3.9.5",
-    "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^6.0.3",
     "vite": "^8.1.4",
     "vite-plugin-compression2": "^2.5.3"

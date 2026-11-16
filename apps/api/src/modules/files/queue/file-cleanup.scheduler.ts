@@ -11,7 +11,10 @@ export class FileCleanupScheduler implements OnApplicationBootstrap {
   async onApplicationBootstrap(): Promise<void> {
     await this.queueProducer.scheduleCleanup(
       { scheduledAt: new Date().toISOString() },
-      { jobId: CLEANUP_JOB_ID, repeat: { every: FILE_CLEANUP.REPEAT_EVERY_MS } },
+      {
+        jobId: CLEANUP_JOB_ID,
+        repeat: { every: FILE_CLEANUP.REPEAT_EVERY_MS },
+      },
     );
   }
 }

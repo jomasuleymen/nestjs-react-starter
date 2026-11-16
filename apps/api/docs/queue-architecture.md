@@ -2,7 +2,7 @@
 
 API and background processing have separate entrypoints:
 
-- `pnpm run start:api` starts HTTP controllers and user-facing modules.
+- `pnpm run start` starts HTTP controllers and user-facing modules.
 - `pnpm run start:background` starts the configured worker or scheduler modules.
 
 Run these commands inside `apps/api`, or use `pnpm --filter ./apps/api run` from

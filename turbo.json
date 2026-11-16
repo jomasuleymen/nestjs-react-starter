@@ -1,36 +1,22 @@
 {
-  "$schema": "https://turborepo.dev/schema.json",
+  "$schema": "./node_modules/turbo/schema.json",
+  "globalDependencies": [
+    "tsconfig.base.json",
+    ".oxlintrc.json",
+    ".prettierrc",
+    ".prettierignore",
+    ".editorconfig"
+  ],
   "tasks": {
-    "dev:app": {
+    "dev": {
       "cache": false,
       "persistent": true
     },
-    "build:app": {
-      "cache": false
+    "build": {
+      "outputs": ["dist/**"]
     },
-    "lint:app": {
-      "cache": false
-    },
-    "type-check:app": {
-      "cache": false
-    },
-    "prisma:generate": {
-      "inputs": ["package.json", "prisma.config.ts", "prisma/**/*.prisma"],
-      "outputs": ["src/generated/prisma/**"]
-    },
-    "openapi:export": {
-      "dependsOn": ["prisma:generate"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsconfig.base.json"],
-      "outputs": [".generated/openapi.json"]
-    },
-    "sdk:generate": {
-      "dependsOn": ["@starter/api#openapi:export"],
-      "inputs": ["package.json", "openapi-ts.config.ts", ".prettier*"],
-      "outputs": ["src/api/generated/**"]
-    },
-    "routes:generate": {
-      "inputs": ["package.json", "vite.config.ts", "src/routes/**"],
-      "outputs": ["src/routeTree.gen.ts"]
-    }
+    "lint": {},
+    "typecheck": {},
+    "db:seed": { "cache": false }
   }
 }

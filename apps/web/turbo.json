@@ -1,25 +1,32 @@
 {
+  "$schema": "../../node_modules/turbo/schema.json",
   "extends": ["//"],
   "tasks": {
-    "dev:app": {
+    "dev": {
       "dependsOn": ["sdk:generate", "routes:generate"],
       "passThroughEnv": ["VITE_*"]
     },
-    "build:app": {
-      "cache": true,
+    "build": {
       "dependsOn": ["sdk:generate", "routes:generate"],
-      "env": ["VITE_API_URL"],
+      "env": ["VITE_*"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "$TURBO_ROOT$/tsconfig.base.json",
         ".env",
         ".env.local",
         ".env.production",
         ".env.production.local"
-      ],
-      "outputs": ["dist/**"]
+      ]
     },
-    "type-check:app": { "dependsOn": ["sdk:generate", "routes:generate"] },
-    "lint:app": { "dependsOn": ["sdk:generate", "routes:generate"] }
+    "typecheck": { "dependsOn": ["sdk:generate", "routes:generate"] },
+    "lint": { "dependsOn": ["sdk:generate", "routes:generate"] },
+    "sdk:generate": {
+      "dependsOn": ["@starter/api#openapi:export"],
+      "inputs": ["package.json", "openapi-ts.config.ts"],
+      "outputs": ["src/api/generated/**"]
+    },
+    "routes:generate": {
+      "inputs": ["package.json", "vite.config.ts", "src/routes/**"],
+      "outputs": ["src/routeTree.gen.ts"]
+    }
   }
 }

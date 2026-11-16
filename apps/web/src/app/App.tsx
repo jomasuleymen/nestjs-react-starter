@@ -12,7 +12,14 @@ import { router } from './router';
 import { appThemes } from './theme';
 
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => (
-  <main style={{ display: 'grid', minHeight: '100vh', padding: 24, placeItems: 'center' }}>
+  <main
+    style={{
+      display: 'grid',
+      minHeight: '100vh',
+      padding: 24,
+      placeItems: 'center',
+    }}
+  >
     <Alert
       action={<Button onClick={resetErrorBoundary}>Повторить</Button>}
       description={error instanceof Error ? error.message : undefined}

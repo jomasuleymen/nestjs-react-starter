@@ -85,7 +85,11 @@ export class S3ObjectStorageAdapter implements ObjectStorage, OnModuleDestroy {
   async getMetadata(bucket: string, key: string): Promise<StoredObjectMetadata> {
     try {
       const result = await this.internalClient.send(
-        new HeadObjectCommand({ Bucket: bucket, Key: key, ChecksumMode: 'ENABLED' }),
+        new HeadObjectCommand({
+          Bucket: bucket,
+          Key: key,
+          ChecksumMode: 'ENABLED',
+        }),
       );
 
       return {
@@ -135,6 +139,8 @@ export class S3ObjectStorageAdapter implements ObjectStorage, OnModuleDestroy {
     }
 
     this.logger.error({ err: error, bucket, key, operation, statusCode }, 'S3 operation failed');
-    throw new ObjectStorageError('Object storage operation failed', { cause: error });
+    throw new ObjectStorageError('Object storage operation failed', {
+      cause: error,
+    });
   }
 }

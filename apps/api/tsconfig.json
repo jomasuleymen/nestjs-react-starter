@@ -13,10 +13,9 @@
     "types": ["node"],
     "resolveJsonModule": true,
 
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
-    "incremental": true,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "incremental": false,
     "sourceMap": true,
     "declaration": false,
     "noEmitOnError": true,
@@ -47,5 +46,5 @@
   },
 
   "include": ["src/**/*.ts", "./*.ts"],
-  "exclude": ["node_modules", "dist", "prisma.config.ts"]
+  "exclude": ["node_modules", "dist", ".generated"]
 }
